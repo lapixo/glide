@@ -20,16 +20,22 @@ class Encode extends BaseManipulator
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
 
-        if ($format === 'pjpg') {
-            $image->interlace();
+        $isProgressive = false;
+        if ($format === 'pjpg')
+        {
+            $isProgressive = true;
             $format = 'jpg';
         }
 
-        if ($format === 'jpg') {
+        if ($format === 'jpg')
+        {
             $image = $image->getDriver()
-                           ->newImage($image->width(), $image->height(), '#fff')
-                           ->insert($image, 'top-left', 0, 0);
+                ->newImage($image->width(), $image->height(), '#fff')
+                ->insert($image, 'top-left', 0, 0);
         }
+
+        if ($isProgressive)
+            $image->interlace();
 
         return $image->encode($format, $quality);
     }
